@@ -1,0 +1,134 @@
+# bashrc.local of Thomas Witt <http://github.com/thomaswitt>
+#
+# Add to /etc/bashrc:
+# test -e "/etc/bashrc.local" && . /etc/bashrc.local
+#
+# And/or:
+# ln -s /etc/bashrc.local /etc/bashrc_
+# ln -s /etc/bashrc.local /etc/bashrc_iTerm.app
+
+# Messages
+export LC_MESSAGES=en_US.UTF-8
+
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+
+# Append to the Bash history file, rather than overwriting it
+shopt -s histappend
+export HISTTIMEFORMAT='%F %T '
+export HISTCONTROL=erasedups
+export HISTSIZE=1000000
+export HISTFILESIZE=1000000000
+
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+        shopt -s "$option" 2> /dev/null
+done
+
+# General
+export PATH=/usr/local/bin:/usr/local/sbin:${PATH}:/usr/X11R6/bin
+export MANPATH=${MANPATH}:/usr/man:/usr/share/man:/usr/X11R6/man:/usr/local/man:/usr/local/share/man
+export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+
+
+# Prompt
+parse_git_branch() {
+ git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+if [ ${UID} -eq 0 ]; then
+  PS1="\[\033[1;31m\]\h:\w #\[\033[0m\] "
+else
+  PS1="\[\033[1;30m\]\u@\h:\[\033[1;34m\]\w\$(parse_git_branch) \$\[\033[0m\] "
+  PROMPT_COMMAND='echo -n -e "\033k\033\\"'
+fi
+# vi
+alias vi='vim'
+alias vip='VIM_PRIVATE=1 vim'
+export EDITOR=vim
+export VISUAL=vim
+
+# Aliases that are making life easier
+alias l='ls -lahoFG'
+alias ll='ls -laOFG'
+alias lll='ls -laOFGe@'
+alias h='history'
+alias hg='history | grep'
+alias c='clear'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias -- -="cd -"
+alias root='sudo -iH'
+
+function psg {
+  ps auxww | egrep -i $1 | grep -v 'egrep -i'
+}
+alias df='df -h'
+
+alias findi='find . -iname'
+alias finds="find . -not -path '*.git*' -and -not -name '*.swp'"
+
+alias ag="ag -i"
+
+alias grep='grep --colour'
+
+alias mkdir='mkdir -p'
+
+alias mdcat="mdless -P"
+
+alias randomnumber="(head /dev/random & ps axl & ps -el & netstat -na  & netstat -s & ls -lRt /dev 2>/dev/null & w) | md5sum"
+
+# npm
+alias npmls="npm -g ls --depth=0"
+alias npmi="npm install -g"
+
+# Git
+alias gst='git status'
+alias gci='git commit -a'
+alias gcip='git commit -a && git push'
+alias gco='git checkout'
+alias gbr='git branch -a'
+alias greset='git reset HEAD'
+alias gadd='git add -A'
+alias ggc='git gc'
+alias gsubinit='git submodule update --init --recursive'
+alias git-update-recursive='find . -name .git -type d -exec bash -c '"'"'echo $(dirname {}) && cd $(dirname {}); git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; if [ $? -eq 0 ]; then git pull --rebase; fi; echo'"'"' \;'
+
+# Networking
+alias sshnk="ssh -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
+
+function openssl-expiry {
+  openssl s_client -servername $1 -connect $1:443 | openssl x509 -noout -dates
+}
+
+checkdns () { dig @$(dig @8.8.8.8 $1 ns +short | head -n1) $1 ANY +noall +answer ; }
+
+# rsync
+export RSYNC_RSH='ssh'
+export RSYNC_OPTS='-CPavz'
+
+
+# Rails
+alias tl='tail -f log/*'
+alias tld='tail -f log/development.log'
+alias ss='if [ -x bin/rails -o -x script/rails ]; then rm log/development.log; bundle exec rake tmp:clear; bundle exec rails server $*; else echo "No rails app found"; fi'
+alias sc='if [ -x bin/rails -o -x script/rails ]; then bundle exec rails console; else echo "No rails app found"; fi'
+alias gi='gem install --no-ri --no-rdoc'
+alias b='bundle exec'
+alias gu='gem update --no-ri --no-rdoc'
+
+# dc
+DC_ENV_ARGS="-e 2k"
+
+# Any additional aliases?
+test -e "${HOME}/.alias" && . ${HOME}/.alias
+
+if [[ $(uname) = "Darwin" ]]; then
+  test -e "/etc/bashrc.local.mac" && . /etc/bashrc.local.mac
+fi
+
+# vim:filetype=bash:

@@ -1,0 +1,12 @@
+caption always " | %-w%{= BW}%50>%n %t%{-}%+w |%<"
+defscrollback 10000
+defutf8 on
+hardstatus alwayslastline "%{wk}[ %H ] %{wb} %= Load: %l %= %{wk} %c:%s | %d.%m.%Y "
+ignorecase on
+msgwait 1
+shell -$SHELL
+startup_message off
+termcap  screen 'AF=\E[3%dm:AB=\E[4%dm'
+termcap  vt100 'AF=\E[3%dm:AB=\E[4%dm'
+terminfo screen 'AF=\E[3%p1%dm:AB=\E[4%p1%dm'
+terminfo vt100 'AF=\E[3%p1%dm:AB=\E[4%p1%dm'

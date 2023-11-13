@@ -1,0 +1,70 @@
+[user]
+	email = mail@thomas-witt.com
+	name = Thomas Witt
+	signingkey = 0xA1872D4700237758
+	useconfigonly = true
+[alias]
+	aa = add -A
+	amend = !git aa && git commit -a --amend && git pf
+	amendnp = !git aa && git commit -a --amend -C HEAD
+	ap = apply --whitespace=fix
+	br = branch
+	ci = commit -a
+	cisquash = "!f(){ git commit -a --allow-empty-message -m '' && git reset --soft HEAD~${1} && git commit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\";};f"
+	co = checkout
+	count = shortlog -sn
+	df = diff
+	f = fetch --all --prune
+  gl = log --oneline
+	l = pull
+	lg = log --graph --pretty=oneline --abbrev-commit --decorate
+	lga = log --graph --pretty=oneline --abbrev-commit --decorate --all
+	oneline = log --pretty=oneline
+	out = log origin..HEAD
+	p = push
+	pf = push -f
+	resign = "!re() { git rebase --exec 'git commit --amend --no-edit -n -S' -i $1; }; re"
+	rh = reset HEAD
+	rhh = reset HEAD --hard
+	sb = show-branch
+	st = status
+	sub = submodule
+	subinit = submodule update --init --recursive
+	subup = submodule update --recursive
+	up = pull --rebase
+	undo = reset --soft HEAD^ # Undo the last commit, staging area untouched
+	upgc = !git pull --rebase && git gc --quiet
+	staged = diff --cached
+	sq = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\";};f"
+  #sqlast = "!f(){ GITBRANCH=$(git symbolic-ref --short HEAD); git reset --soft HEAD~$(git log --oneline origin/${GITBRANCH}^..${GITBRANCH} | wc -l | tr -d ' ') && git commit --edit -m \"$(git log --format=%B --reverse HEAD..HEAD@{1} | head -n 1)\"; };f"
+[color]
+	ui = auto
+	diff = auto
+	status = auto
+	branch = auto
+[commit]
+	template = ~/.gitmessage
+	gpgsign = true
+[core]
+	excludesfile = /Users/thomas/.gitignore
+	quotepath = false
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main
+[mergetool "sourcetree"]
+	cmd = /Applications/_Apps/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[pull]
+	rebase = true
+[push]
+	default = simple
+  autoSetupRemote = true
+[status]
+	submodulesummary = 1

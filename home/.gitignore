@@ -1,0 +1,6 @@
+*.scratch.*
+*.sw?
+*~
+.DS_Store
+.fseventsd
+/tmp

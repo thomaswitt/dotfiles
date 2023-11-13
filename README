@@ -1,0 +1,7 @@
+My personal dotfiles
+
+- Clone this repo and run mac-settings.sh
+- Make sure you read every file before blindly installing it
+- Pull single files via curl/wget https://raw.githubusercontent.com/thomaswitt/dotfiles/main/[…]
+- After mac updates consider `brew list | xargs brew reinstall` or `brew
+  bundle dump --describe --global` followed by `brew bundle install --global`

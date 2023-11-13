@@ -1,0 +1,3 @@
+---
+install: --env-shebang --document rdoc,ri --update-sources
+update: --env-shebang --document rdoc,ri --update-sources

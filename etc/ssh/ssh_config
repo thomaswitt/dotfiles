@@ -1,0 +1,38 @@
+Match host *.compute.amazonaws.com
+  StrictHostKeyChecking no
+  UserKnownHostsFile ~/.ssh/known_hosts_aws
+  VerifyHostKeyDNS no
+
+Match exec "nslookup %n | grep .compute.amazonaws.com"
+  StrictHostKeyChecking no
+  UserKnownHostsFile ~/.ssh/known_hosts_aws
+  VerifyHostKeyDNS no
+
+Host github.com
+  CheckHostIP no
+
+Host heroku.com
+  CheckHostIP no
+  KexAlgorithms diffie-hellman-group1-sha1
+  MACs hmac-sha1
+
+# Usage:
+# - ssh host1+host2
+# - ssh user1%host1+host2 -l user2
+# - ssh host1:port1+host2
+# - scp filename host1+host2:~/
+# - ssh host1+host2+host3
+Host *+*
+  ProxyCommand ssh $(echo %h | sed 's/+[^+]*$//;s/\([^+%%]*\)%%\([^+]*\)$/\2 -l \1/;s/:/ -p /') nc -w10 $(echo %h | sed 's/^.*+//;/:/!s/$/ %p/;s/:/ /')
+
+Host *
+  CheckHostIP yes
+  Compression yes
+  HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-dss-cert-v01@openssh.com,ssh-rsa,ssh-dss
+  KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1
+  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512
+  Protocol 2
+  SendEnv LANG LC_*
+  ServerAliveInterval 10
+  StrictHostKeyChecking ask
+  VerifyHostKeyDNS yes

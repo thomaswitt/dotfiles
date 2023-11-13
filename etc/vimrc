@@ -1,0 +1,294 @@
+" vimrc of Thomas Witt <http://github.com/thomaswitt>
+"
+" 1. Don't forget to install Vundle:
+" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+"
+" 2.Then run: vim -i NONE -c VundleUpdate -c quitall
+"
+" 3. Also get the Inconsolata Font at
+"   https://fonts.google.com/specimen/Inconsolata
+
+set shell=/bin/bash
+set shellcmdflag=-l\ -c
+
+language messages en_US.UTF-8
+
+syntax on                             " Syntax highlighting
+set hlsearch                          " Highlight search results
+colorscheme default
+
+set autoindent          " Always set autoindenting on
+set autoread            " Re-read files that changed on disk
+set backspace=2         " Allow backspacing over everything in insert mode
+set cmdheight=2         " Height of the command line , avoid hit enter prompts
+set confirm             " Use confirmation dialogs
+set encoding=utf-8      " The terminal encoding
+set hidden              " Allow several buffers to be opened (and unsaved)
+set ignorecase          " Case-insensitive search by default
+set incsearch           " Incremental search shows the first match while typing
+set laststatus=2        " Always show a status line
+set list                " List mode:Show tabs as CTRL-I, show end of line with $
+set modeline            " Read vim configuration from inside loaded files
+set modelines=5         " Scan up to 5 lines for a modeline
+set nocompatible        " Use Vim defaults (much better!)
+set nostartofline       " Don't move the cursor to the first non blank char
+set report=0            " Always report number of lines changed
+set ruler               " Show the line and column number of the cursor position
+set scrolloff=4         " Minimal number of lines above and below the cursor
+set showcmd             " Show (partial) command in the last line of the screen
+set showmatch           " Highlight matching brackets
+set smartcase           " Respect case if the pattern contains upper case chars
+set smarttab            " Insert tabs according to shiftwidth
+set textwidth=72        " Textwidth 72 chars
+set title               " Set/change the window title
+set visualbell          " Use visual bell instead of a sound
+set whichwrap=<,>,[,]   " dont wrap at these special movements
+set wildignore+=.git    " Ignore .git repositories
+set wildmenu            " Command-line completion operates in an enhanced mode
+set wrap                " Display long lines wrapped
+
+set formatoptions=ctqrl                 " wrap comments and text, allow gq,
+                                        "cont. comments, keep long lines
+set listchars=tab:»\ ,extends:¤,trail:· " Special chars
+set viminfo=%,'500,<500,:5000,/500,@500 " viminfo: files, registers, cmds,
+                                        " searches, input line history
+set wildmode=list:longest,list:full     " Completion mode
+
+set comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-,n:\| " What's a comment
+set fileencodings=ucs-bom,utf-8,default,latin1               " order of file enc
+
+set directory=~/.vimbackup,.,~/tmp,/var/tmp,/tmp
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+:silent! call vundle#begin()
+if exists(':VundleInstall')
+  Plugin 'VundleVim/Vundle.vim'
+
+  " Inspired from https://github.com/astrails/dotvim
+  Plugin 'tomasr/molokai'                " TextMate Colorscheme
+  Plugin 'github/copilot.vim'             " Github Copilot
+  Plugin 'rizzatti/dash.vim'              " Search Dash.app from Vim
+  Plugin 'tomtom/tcomment_vim'            " comment vim-plugin that also handles embedded filetypes
+  Plugin 'tpope/vim-rbenv'                " RBenv
+  Plugin 'tpope/vim-rails'                " Ruby on Rails
+  Plugin 'tpope/vim-repeat'               " enable repeating supported plugin maps with .
+  Plugin 'tpope/vim-surround'             " quoting/parenthesizing made simple
+  Plugin 'vim-airline/vim-airline-themes'
+  Plugin 'vim-ruby/vim-ruby'              " Vim/Ruby Configuration Files
+  Plugin 'vim-scripts/AutoComplPop'       " Automatically opens popup menu for completions
+  Plugin 'vim-scripts/BufOnly.vim'        " Delete all the buffers except the current/named buffer
+  Plugin 'vim-scripts/CtrlP.vim'          " Fuzzy file, buffer, mru, tag, etc finder
+  Plugin 'vim-scripts/FindFile'           " Open file quickly by using autocomplete
+  Plugin 'vim-scripts/ag.vim'             " Use ag, the_silver_searcher
+  Plugin 'vim-scripts/blockle.vim'        " Toggle ruby block styles
+  Plugin 'vim-scripts/delimitMate.vim'    " Provides auto-balancing and some expansions for parens, quotes
+  Plugin 'vim-scripts/endwise.vim'        " endwise.vim: wisely add "end" in ruby, endfunction/endif/more
+  Plugin 'vim-scripts/snipMate'           " TextMate-style snippets for Vim
+  Plugin 'vim-scripts/switch.vim'         " switch segments of text with predefined replacements
+  Plugin 'vim-scripts/textobj-rubyblock'  " A custom text object for selecting ruby blocks.
+  Plugin 'vim-scripts/textobj-user'       " Create your own text objects
+  Plugin 'vim-scripts/vim-airline'        " lean & mean status/tabline
+  Plugin 'w0rp/ale'                       " Check syntax in Vim asynchronously and fix files
+  Plugin 'wipeout'                        " Destroy all buffers that are not open in any tabs or windows.
+  call vundle#end()
+endif
+
+filetype plugin indent on
+
+set softtabstop=2     " Number of spaces that a <Tab> counts
+set tabstop=2         " Number of spaces that a <Tab> in the file counts for
+set shiftwidth=2      " Number of spaces to use for each step of (auto)indent
+set expandtab         " Use the appropriate number of spaces to insert a <Tab>
+
+autocmd FileType * set ts=2 sts=2 sw=2 expandtab
+
+" Filetype: YAML
+au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+" Search for the string marked in visual mode. E.g.: press v, go some chars to the right, press /
+vmap / y/<C-R>"<CR>
+vmap ß y:Ack "<C-R>""<CR>
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" Ctrl-p: previous buffer
+map <C-p> :bp<CR>
+
+" Ctrl-n: next buffer
+map <C-n> :bn<CR>
+
+" Go over wrapped lines with j and k. These will jump to the next/previous
+" displayed line instead of the next/previous physical line.
+map j gj
+map k gk
+
+" Change single- to doublequotes and vice versa (requires surround plugin)
+nmap ,' cs"'
+nmap ," cs'"
+
+" VSplit
+map ,vs :vsplit<CR>
+
+" Strip Returns
+map ,cel :%s/^\n//<CR>
+
+" Strip Whitespaces
+map ,sws :%s/\s\+$//<CR>
+
+" Go
+:let $GOPATH = expand('/opt/go')
+
+" JSLint
+map ,j :!clear;java org.mozilla.javascript.tools.shell.Main ~/.vim/jslint.js %<CR>
+
+" F1: Run Rake
+map <F1> :Rake<CR>
+
+" Shift-F1: GitX
+map <S-F1> :!open -a GitX .<CR>
+
+" F2: Select all.
+nnoremap <F2> ggVG
+nnoremap <S-F2> ggVG"+y
+
+" F3: Toggle line wrapping
+nnoremap <F3> :set wrap!<CR>
+
+" F4: Toggle paste mode.
+nnoremap \pt :set invpaste paste?<CR>
+nmap <F4> \pt
+imap <F4> <C-O>\pt
+set pastetoggle=<F4>
+
+" F5: Toggle line numbering.
+nmap <silent> <F5> :set invnumber<CR>
+
+" F6: none
+map <F6> :Copilot enable<CR>
+map <S-F6> :Copilot disable<CR>
+
+" F7: none
+
+" F8: none
+
+" F9: Current Buffer will not be written (for templfiles)
+map <F9> :set buftype=nofile<CR>
+map <S-F9> :set buftype=<CR>
+
+" F10: Buffer Explorer / Delete Buffers
+nnoremap <silent> <F10> :TMiniBufExplorer<CR>
+
+" F11: Wipeout/BufOnly
+nnoremap <silent> <F11> :Wipeout!<CR>
+nnoremap <silent> <S-F11> :BufOnly!<CR>
+
+" F12: Rails find
+nnoremap <silent> <F12> :Rfind
+
+" Tabs
+nnoremap <D-M-Left> gT
+nnoremap <D-M-Right> gt
+
+" Remap []{}|\~ on the mac for easier typing on the Mac
+map! <D-ü> [
+map! <D-+> ]
+map! <D-Ü> {
+map! <D-*> }
+map! <D-°> ~
+map! <D-Ä> \
+map! <D-'> \|
+
+" RGrep
+:let Grep_Find_Use_Xargs = 0
+
+if exists('$ITERM_PROFILE')
+  if exists('$TMUX')
+    let &t_SI = "\<Esc>[3 q"
+    let &t_EI = "\<Esc>[0 q"
+  else
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  endif
+end
+
+" For tmux to automatically set paste and nopaste mode at the time pasting (as
+" happens in VIM UI)
+
+function! WrapForTmux(s)
+  if !exists('$TMUX')
+    return a:s
+  endif
+  let tmux_start = "\<Esc>Ptmux;"
+  let tmux_end = "\<Esc>\\"
+  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+endfunction
+
+let &t_SI .= WrapForTmux("\<Esc>[?2004h")
+let &t_EI .= WrapForTmux("\<Esc>[?2004l")
+
+" Github Copilot
+let g:copilot_node_command = "/opt/homebrew/opt/node@16/bin/node"
+" Disable Copilot by default
+let g:copilot_enabled = v:false
+let g:copilot_filetypes = {
+  \ '*': v:false,
+  \ 'css': v:true,
+  \ 'html': v:true,
+  \ 'ruby': v:true,
+  \ 'sass': v:true,
+  \ 'scss': v:true,
+\ }
+
+autocmd BufReadPre *
+   \ let f=getfsize(expand("<afile>"))
+   \ | if f > 100000 || f == -2
+   \ | let b:copilot_enabled = v:false
+   \ | endif
+
+" augroup DeleteTrailingWhitespaces
+"   autocmd!
+"   autocmd BufWritePre * :%s/\s\+$//e
+" augroup END
+
+" augroup Go
+"   autocmd! FileType go  setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab nolist
+"   let g:go_fmt_command = "goimports"
+"   " Show type info for the word under your cursor:
+"   au FileType go nmap <Leader>i <Plug>(go-info)
+"   au FileType go nmap <leader>r <Plug>(go-run)
+"   " au FileType go nmap <leader>b <Plug>(go-build)
+"   au FileType go nmap <leader>t <Plug>(go-test)
+"   au FileType go nmap <leader>c <Plug>(go-coverage)
+"   au FileType go nmap <Leader>e <Plug>(go-rename)
+"   au FileType go nmap <leader>l :GoLint<CR>
+"   au FileType go nmap gd <Plug>(go-def)
+"   autocmd BufWritePost *.go GoLint
+" augroup END
+
+if has("gui_running")                   " GUI running?
+  set guifont=Inconsolata-dz:h16        " Bigger font for MacVim
+  set antialias                         " Anti Aliased Font
+  winsize 80 80                         " Resize Window
+  set guioptions-=m                     " Remove menu bar
+  set guioptions-=T                     " Remove toolbar
+  set background=dark
+  colorscheme molokai
+endif
+
+" Call vim via VIM_PRIVATE=1 vim for privacy
+if $VIM_PRIVATE
+  set history=0
+  set nobackup
+  set nomodeline
+  set noshelltemp
+  set noswapfile
+  set noundofile
+  set nowritebackup
+  set secure
+  set viminfo=""
+  let g:copilot_filetypes = { '*': v:false, }
+  let b:copilot_enabled = { v:false }
+endif

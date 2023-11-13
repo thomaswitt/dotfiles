@@ -1,0 +1,40 @@
+# screenrc of Thomas Witt <http://github.com/thomaswitt>
+
+caption always " | %-w%{= BW}%50>%n %t%{-}%+w |%<"
+hardstatus alwayslastline "%{wk}[ %H ] %{wb} %= Load: %l %= %{wk} %c:%s | %d.%m.%Y "
+
+shelltitle ' $ |bash'
+
+defutf8 on
+
+ignorecase on
+
+msgwait 1
+
+defscrollback 10000
+startup_message off
+
+# F6: Copy
+bindkey -k k6 copy
+
+# F7: Paste
+bindkey -k k7 paste
+
+# F8: Title
+bindkey -k k8 title
+
+# F9: Windowlist
+bindkey -k k9 windowlist -b
+
+# F12: History completion
+bindkey -k F2 history
+
+# Page up/down: Next/previus Window
+bindkey -k kP prev
+bindkey -k kN next
+
+## Enable when needed
+#termcap  screen 'AF=\E[3%dm:AB=\E[4%dm'
+#terminfo screen 'AF=\E[3%p1%dm:AB=\E[4%p1%dm'
+#termcap  vt100 'AF=\E[3%dm:AB=\E[4%dm'
+#terminfo vt100 'AF=\E[3%p1%dm:AB=\E[4%p1%dm'
