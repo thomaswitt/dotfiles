@@ -1,111 +1,76 @@
 " vimrc of Thomas Witt <http://github.com/thomaswitt>
-"
-" 1. Don't forget to install Vundle:
-" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-"
-" 2.Then run: vim -i NONE -c VundleUpdate -c quitall
-"
-" 3. Also get the Inconsolata Font at
-"   https://fonts.google.com/specimen/Inconsolata
 
-set shell=/bin/bash
+set shell=/usr/bin/env\ bash
 set shellcmdflag=-l\ -c
 
 language messages en_US.UTF-8
 
-syntax on                             " Syntax highlighting
-set hlsearch                          " Highlight search results
-colorscheme default
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" ¿ then run :PlugInstall
+call plug#begin()
+Plug 'junegunn/vim-easy-align'
+  "Plug 'garbas/vim-snipmate'      " TextMate-style snippets for Vim
+  Plug 'AndrewRadev/switch.vim'   " Switch segments of text predefined repls
+  Plug 'artnez/vim-wipeout'       " Destroy all buffers that are not open
+  Plug 'ctrlpvim/ctrlp.vim'       " Fuzzy Search
+  Plug 'dense-analysis/ale'       " Check/fix syntax asynchronously
+  Plug 'github/copilot.vim'       " Github Copilot
+  Plug 'jlanzarotta/bufexplorer'
+  Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
+  Plug 'ruby-formatter/rufo-vim'  " RuFo
+  Plug 'stefanoverna/vim-i18n'    " Rails Translations
+  Plug 'tomasr/molokai'           " TextMate Colorscheme
+  Plug 'tomtom/tcomment_vim'      " comment vim-plugin
+  Plug 'tpope/vim-endwise'        " Ruby on Rails
+  Plug 'tpope/vim-fugitive'       " git
+  Plug 'tpope/vim-rails'          " Ruby on Rails
+  Plug 'tpope/vim-rbenv'          " RBenv
+  Plug 'tpope/vim-repeat'         " enable repeat supported plugin maps with .
+  Plug 'tpope/vim-sensible'       " Sensible defaults
+  Plug 'tpope/vim-surround'       " quoting/parenthesizing made simple
+  Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes' "Status
+  Plug 'vim-ruby/vim-ruby'        " Vim/Ruby Configuration Files
+  Plug 'vim-scripts/BufOnly.vim'  " Delete all the buffers except the current
+  Plug 'rking/ag.vim'             " Use ag, the_silver_searcher
+  Plug 'vim-scripts/greplace.vim' " Global replace
+call plug#end()
 
 set autoindent          " Always set autoindenting on
-set autoread            " Re-read files that changed on disk
-set backspace=2         " Allow backspacing over everything in insert mode
-set cmdheight=2         " Height of the command line , avoid hit enter prompts
+set cmdheight=2         " Height of the command line, avoid hit enter prompts
 set confirm             " Use confirmation dialogs
+set directory=~/.vimbackup,.,~/tmp,/var/tmp,/tmp
 set encoding=utf-8      " The terminal encoding
+set expandtab           " Use the appropriate number of spaces to insert a <Tab>
+set formatoptions=ctqrlj  " wrap comts/text, gq, cont. comments, keep long lines
 set hidden              " Allow several buffers to be opened (and unsaved)
+set hlsearch                          " Highlight search results
 set ignorecase          " Case-insensitive search by default
-set incsearch           " Incremental search shows the first match while typing
-set laststatus=2        " Always show a status line
 set list                " List mode:Show tabs as CTRL-I, show end of line with $
 set modeline            " Read vim configuration from inside loaded files
 set modelines=5         " Scan up to 5 lines for a modeline
-set nocompatible        " Use Vim defaults (much better!)
 set nostartofline       " Don't move the cursor to the first non blank char
 set report=0            " Always report number of lines changed
-set ruler               " Show the line and column number of the cursor position
 set scrolloff=4         " Minimal number of lines above and below the cursor
+set shiftwidth=2        " Number of spaces to use for each step of (auto)indent
 set showcmd             " Show (partial) command in the last line of the screen
 set showmatch           " Highlight matching brackets
 set smartcase           " Respect case if the pattern contains upper case chars
-set smarttab            " Insert tabs according to shiftwidth
+set softtabstop=2       " Number of spaces that a <Tab> counts
+set tabstop=2           " Number of spaces that a <Tab> in the file counts for
 set textwidth=72        " Textwidth 72 chars
 set title               " Set/change the window title
+set viminfo=%,'500,<500,:5000,/500,@500 " viminfo: files, reg, cmds, sea, hist
 set visualbell          " Use visual bell instead of a sound
 set whichwrap=<,>,[,]   " dont wrap at these special movements
 set wildignore+=.git    " Ignore .git repositories
-set wildmenu            " Command-line completion operates in an enhanced mode
+set wildmode=list:longest,list:full     " Completion mode
 set wrap                " Display long lines wrapped
 
-set formatoptions=ctqrl                 " wrap comments and text, allow gq,
-                                        "cont. comments, keep long lines
-set listchars=tab:»\ ,extends:¤,trail:· " Special chars
-set viminfo=%,'500,<500,:5000,/500,@500 " viminfo: files, registers, cmds,
-                                        " searches, input line history
-set wildmode=list:longest,list:full     " Completion mode
-
-set comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-,n:\| " What's a comment
-set fileencodings=ucs-bom,utf-8,default,latin1               " order of file enc
-
-set directory=~/.vimbackup,.,~/tmp,/var/tmp,/tmp
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-:silent! call vundle#begin()
-if exists(':VundleInstall')
-  Plugin 'VundleVim/Vundle.vim'
-
-  " Inspired from https://github.com/astrails/dotvim
-  Plugin 'tomasr/molokai'                " TextMate Colorscheme
-  Plugin 'github/copilot.vim'             " Github Copilot
-  Plugin 'rizzatti/dash.vim'              " Search Dash.app from Vim
-  Plugin 'tomtom/tcomment_vim'            " comment vim-plugin that also handles embedded filetypes
-  Plugin 'tpope/vim-rbenv'                " RBenv
-  Plugin 'tpope/vim-rails'                " Ruby on Rails
-  Plugin 'tpope/vim-repeat'               " enable repeating supported plugin maps with .
-  Plugin 'tpope/vim-surround'             " quoting/parenthesizing made simple
-  Plugin 'vim-airline/vim-airline-themes'
-  Plugin 'vim-ruby/vim-ruby'              " Vim/Ruby Configuration Files
-  Plugin 'vim-scripts/AutoComplPop'       " Automatically opens popup menu for completions
-  Plugin 'vim-scripts/BufOnly.vim'        " Delete all the buffers except the current/named buffer
-  Plugin 'vim-scripts/CtrlP.vim'          " Fuzzy file, buffer, mru, tag, etc finder
-  Plugin 'vim-scripts/FindFile'           " Open file quickly by using autocomplete
-  Plugin 'vim-scripts/ag.vim'             " Use ag, the_silver_searcher
-  Plugin 'vim-scripts/blockle.vim'        " Toggle ruby block styles
-  Plugin 'vim-scripts/delimitMate.vim'    " Provides auto-balancing and some expansions for parens, quotes
-  Plugin 'vim-scripts/endwise.vim'        " endwise.vim: wisely add "end" in ruby, endfunction/endif/more
-  Plugin 'vim-scripts/snipMate'           " TextMate-style snippets for Vim
-  Plugin 'vim-scripts/switch.vim'         " switch segments of text with predefined replacements
-  Plugin 'vim-scripts/textobj-rubyblock'  " A custom text object for selecting ruby blocks.
-  Plugin 'vim-scripts/textobj-user'       " Create your own text objects
-  Plugin 'vim-scripts/vim-airline'        " lean & mean status/tabline
-  Plugin 'w0rp/ale'                       " Check syntax in Vim asynchronously and fix files
-  Plugin 'wipeout'                        " Destroy all buffers that are not open in any tabs or windows.
-  call vundle#end()
-endif
-
-filetype plugin indent on
-
-set softtabstop=2     " Number of spaces that a <Tab> counts
-set tabstop=2         " Number of spaces that a <Tab> in the file counts for
-set shiftwidth=2      " Number of spaces to use for each step of (auto)indent
-set expandtab         " Use the appropriate number of spaces to insert a <Tab>
+" Powerline Fonts
+" let g:airline_powerline_fonts = 1
 
 autocmd FileType * set ts=2 sts=2 sw=2 expandtab
-
-" Filetype: YAML
-au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 " Search for the string marked in visual mode. E.g.: press v, go some chars to the right, press /
 vmap / y/<C-R>"<CR>
@@ -115,10 +80,10 @@ vmap ß y:Ack "<C-R>""<CR>
 map Q gq
 
 " Ctrl-p: previous buffer
-map <C-p> :bp<CR>
+"map <C-p> :bp<CR>
 
 " Ctrl-n: next buffer
-map <C-n> :bn<CR>
+"map <C-n> :bn<CR>
 
 " Go over wrapped lines with j and k. These will jump to the next/previous
 " displayed line instead of the next/previous physical line.
@@ -137,12 +102,6 @@ map ,cel :%s/^\n//<CR>
 
 " Strip Whitespaces
 map ,sws :%s/\s\+$//<CR>
-
-" Go
-:let $GOPATH = expand('/opt/go')
-
-" JSLint
-map ,j :!clear;java org.mozilla.javascript.tools.shell.Main ~/.vim/jslint.js %<CR>
 
 " F1: Run Rake
 map <F1> :Rake<CR>
@@ -173,13 +132,14 @@ map <S-F6> :Copilot disable<CR>
 " F7: none
 
 " F8: none
+" map <F8> :set buftype=nofile<CR>
+" map <S-F8> :set buftype=<CR>
 
 " F9: Current Buffer will not be written (for templfiles)
-map <F9> :set buftype=nofile<CR>
-map <S-F9> :set buftype=<CR>
+nnoremap <silent> <F9> :NERDTreeToggle<CR>
 
 " F10: Buffer Explorer / Delete Buffers
-nnoremap <silent> <F10> :TMiniBufExplorer<CR>
+nnoremap <silent> <F10> :BufExplorer<CR>
 
 " F11: Wipeout/BufOnly
 nnoremap <silent> <F11> :Wipeout!<CR>
@@ -229,8 +189,25 @@ endfunction
 let &t_SI .= WrapForTmux("\<Esc>[?2004h")
 let &t_EI .= WrapForTmux("\<Esc>[?2004l")
 
+" Enable rufo (RUby FOrmat)
+let g:rufo_auto_formatting = 1
+
+" ALE
+let g:ale_ruby_rufo_executable = '/Users/thomas/.rbenv/shims/rufo'
+let g:ale_ruby_rubocop_executable = '/Users/thomas/.rbenv/shims/rubocop'
+let g:ale_eruby_erblint_executable = '/Users/thomas/.rbenv/shims/erblint'
+let g:ale_linters = {
+\ 'ruby': ['rubocop'],
+\ 'eruby': ['erblint'],
+\}
+let g:ale_linters_explicit = 1
+let g:ale_sign_column_always = 1
+" let g:ale_sign_error = '\u2022'
+" let g:ale_sign_warning = '\u2022'
+
 " Github Copilot
-let g:copilot_node_command = "/opt/homebrew/opt/node@16/bin/node"
+let g:copilot_node_command = "/opt/homebrew/bin/node"
+
 " Disable Copilot by default
 let g:copilot_enabled = v:false
 let g:copilot_filetypes = {
@@ -238,6 +215,7 @@ let g:copilot_filetypes = {
   \ 'css': v:true,
   \ 'html': v:true,
   \ 'ruby': v:true,
+  \ 'eruby': v:true,
   \ 'sass': v:true,
   \ 'scss': v:true,
 \ }
