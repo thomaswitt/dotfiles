@@ -1,0 +1,12 @@
+#!/bin/bash -l
+
+IP=192.168.X.X # CHANGEME
+
+if [ $# -eq 0 ]; then
+  curl -qs http://$IP:9123/elgato/lights \
+    | /opt/homebrew/bin/jq -c '{numberOfLights, lights:[.lights[] | {on: (if .on == 1 then 0 else 1 end), brightness, temperature}]}' \
+    | curl -qs -X PUT -d @- http://$IP:9123/elgato/lights >/dev/null
+else
+  /opt/homebrew/bin/jq -cn "{numberOfLights:1,lights:[{on:$1}]}" | \
+    curl -qs -X PUT -d @- http://$IP:9123/elgato/lights >/dev/null
+fi

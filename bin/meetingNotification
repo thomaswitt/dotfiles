@@ -1,0 +1,10 @@
+#!/bin/bash -l
+
+function screenIsUnlocked { [ "$(/usr/libexec/PlistBuddy -c "print :IOConsoleUsers:0:CGSSessionScreenIsLocked" /dev/stdin 2>/dev/null <<< "$(ioreg -n Root -d1 -a)")" != "true" ] && return 0 || return 1; }
+
+if screenIsUnlocked; then
+  /usr/local/bin/ringLight 1
+  sleep 1
+  /usr/local/bin/ringLight 0
+  say "Du hast jetzt ein Meeting"
+fi
