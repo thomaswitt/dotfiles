@@ -1,0 +1,89 @@
+#!/bin/bash
+#
+# Requres https://github.com/karaggeorge/macos-audio-devices
+
+# Function to list output devices
+list_output_devices() {
+    macos-audio-devices list \
+      | awk '/Output Devices/{flag=1; next} /Input Devices/{flag=0} flag' \
+      | grep -v '^$'
+}
+
+
+# Function to change volume
+change_volume() {
+    device_id=$1
+    new_volume=$2
+
+    if [[ $new_volume == "mute" ]]; then
+        macos-audio-devices volume set "$device_id" 0
+    else
+        macos-audio-devices volume set "$device_id" $(bc <<< "scale=2; $new_volume/100")
+    fi
+}
+
+# Function to adjust volume incrementally
+adjust_volume() {
+    device_id=$1
+    direction=$2
+    current_volume=$(macos-audio-devices volume get "$device_id")
+    if [[ $direction == "increase" ]]; then
+        adjusted_volume=$(echo "$current_volume + 0.1" | bc | LC_ALL=en_US.UTF-8 awk '{printf "%.2f\n", $0}')
+    else
+        adjusted_volume=$(echo "$current_volume - 0.1" | bc | LC_ALL=en_US.UTF-8 awk '{printf "%.2f\n", $0}')
+    fi
+
+    # Ensure volume does not exceed bounds
+    if (( $(echo "$adjusted_volume > 1" | bc) )); then
+        adjusted_volume=1.00
+    elif (( $(echo "$adjusted_volume < 0" | bc) )); then
+        adjusted_volume=0.00
+    fi
+
+    macos-audio-devices volume set "$device_id" "$adjusted_volume"
+}
+
+
+# Main script logic
+if [ $# -eq 0 ]; then
+    list_output_devices
+elif [ $# -eq 1 ]; then
+    if [[ $1 =~ ^[0-9]+$ ]]; then
+        macos-audio-devices volume get "$1"
+    else
+        echo "Invalid argument. Expected a device ID."
+    fi
+elif [ $# -eq 2 ]; then
+    device_id=$1
+    action=$2
+
+    if [[ ! $device_id =~ ^[0-9]+$ ]]; then
+        echo "Invalid device ID. Expected a numeric value."
+        exit 1
+    fi
+
+    case $action in
+        mute)
+            change_volume "$device_id" "mute"
+            $0 "$device_id"
+            ;;
+        [0-9]*)
+            if [ "$action" -ge 0 ] && [ "$action" -le 100 ]; then
+                change_volume "$device_id" "$action"
+                $0 "$device_id"
+            else
+                echo "Invalid volume. Please provide a numeric value between 0 and 100."
+            fi
+            ;;
+        increase|decrease)
+            adjust_volume "$device_id" "$action"
+            $0 "$device_id"
+            ;;
+        *)
+            echo "Invalid action. Usage: audio-volume [device_id] [volume/mute/increase/decrease]"
+            ;;
+    esac
+else
+    echo "Invalid number of arguments. Usage: audio-volume [device_id] [volume/mute/increase/decrease]"
+fi
+
