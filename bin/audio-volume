@@ -1,6 +1,27 @@
-#!/bin/bash
+#!/bin/bash -l
 #
-# Requres https://github.com/karaggeorge/macos-audio-devices
+# Requires:
+# https://github.com/karaggeorge/macos-audio-devices
+# https://github.com/julienXX/terminal-notifier
+
+# Function to get device ID from name
+function get_device_id() {
+    device_name=$1
+    macos-audio-devices list \
+      | awk '/Output Devices/{flag=1;next}/Input Devices/{flag=0}flag' \
+      | grep -iF "$device_name" \
+      | awk '{print $1}'
+}
+
+# Notification
+function notification() {
+  terminal-notifier \
+    -title 'Volume Changed' \
+    -message "$1" \
+    -sound 'Sosumi' \
+    -contentImage 'https://cdn.thomas-witt.com/soundsource.png' \
+    -appIcon 'https://cdn.thomas-witt.com/soundsource.png'
+}
 
 # Function to list output devices
 list_output_devices() {
@@ -43,18 +64,18 @@ adjust_volume() {
     macos-audio-devices volume set "$device_id" "$adjusted_volume"
 }
 
-
 # Main script logic
 if [ $# -eq 0 ]; then
     list_output_devices
 elif [ $# -eq 1 ]; then
-    if [[ $1 =~ ^[0-9]+$ ]]; then
-        macos-audio-devices volume get "$1"
+    device_id=$(get_device_id "$1")
+    if [[ $device_id =~ ^[0-9]+$ ]]; then
+        macos-audio-devices volume get "$device_id"
     else
         echo "Invalid argument. Expected a device ID."
     fi
 elif [ $# -eq 2 ]; then
-    device_id=$1
+    device_id=$(get_device_id "$1")
     action=$2
 
     if [[ ! $device_id =~ ^[0-9]+$ ]]; then
@@ -66,6 +87,7 @@ elif [ $# -eq 2 ]; then
         mute)
             change_volume "$device_id" "mute"
             $0 "$device_id"
+            notification "Volume of $1 muted"
             ;;
         [0-9]*)
             if [ "$action" -ge 0 ] && [ "$action" -le 100 ]; then
@@ -74,10 +96,12 @@ elif [ $# -eq 2 ]; then
             else
                 echo "Invalid volume. Please provide a numeric value between 0 and 100."
             fi
+            notification "Volume of $1 change to $2"
             ;;
         increase|decrease)
             adjust_volume "$device_id" "$action"
             $0 "$device_id"
+            notification "Volume of $1 $action"
             ;;
         *)
             echo "Invalid action. Usage: audio-volume [device_id] [volume/mute/increase/decrease]"

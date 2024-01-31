@@ -1,0 +1,53 @@
+#!/bin/bash -l
+#
+# Requires:
+# https://github.com/karaggeorge/macos-audio-devices
+# https://github.com/julienXX/terminal-notifier
+
+# Notification
+function notification() {
+  terminal-notifier \
+    -title 'Volume Changed' \
+    -message "$1" \
+    -sound 'Sosumi' \
+    -contentImage 'https://CHANGEME.com/soundsource.png' \
+    -appIcon 'https://CHANGEME.COM/soundsource.png'
+}
+
+# Function to get device ID from name
+get_device_id() {
+    device_type=$1
+    device_name=$2
+    if [ "$device_type" == "input" ]; then
+        macos-audio-devices list | awk '/Input Devices/,/Output Devices/' | grep -iF "$device_name" | awk '{print $1}'
+    elif [ "$device_type" == "output" ]; then
+        macos-audio-devices list | awk '/Output Devices/{flag=1;next}/Input Devices/{flag=0}flag' | grep -iF "$device_name" | awk '{print $1}'
+    fi
+}
+
+# Main script logic
+if [ $# -eq 0 ]; then
+    echo "Current input: `macos-audio-devices input get`"
+    echo "Current output: `macos-audio-devices output get`"
+    echo
+    macos-audio-devices list
+    exit 0
+fi
+
+if [ $# -ne 2 ]; then
+    echo "Usage: set-audio-device [input/output] 'Device Name'"
+    exit 1
+fi
+
+device_type=$1
+device_name=$2
+device_id=$(get_device_id "$device_type" "$device_name")
+
+if [ -z "$device_id" ]; then
+    echo "Device not found: $device_name"
+    exit 1
+fi
+
+macos-audio-devices "$device_type" set "$device_id"
+notification "$device_type device is now $device_name"
+macos-audio-devices "$device_type" get

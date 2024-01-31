@@ -4,6 +4,7 @@ echo "Killing Process"
 ps auxww | egrep '[G]oogleSoftwareUpdate' | awk '{print $2}' | xargs kill
 
 echo "Killing Local Installation"
+rm -f "${HOME}/Library/LaunchAgents/com.google.GoogleUpdater.wake.plist"
 GSU_LOCAL_DIR="${HOME}/Library/Google/GoogleSoftwareUpdate"
 if [ -d $GSU_LOCAL_DIR ]; then
   sudo chflags noschg,nouchg,noschange,nosimmutable $GSU_LOCAL_DIR
