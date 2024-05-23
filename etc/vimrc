@@ -18,7 +18,7 @@ Plug 'junegunn/vim-easy-align'
   Plug 'github/copilot.vim'       " Github Copilot
   Plug 'jlanzarotta/bufexplorer'
   Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
-  Plug 'ruby-formatter/rufo-vim'  " RuFo
+  "Plug 'ruby-formatter/rufo-vim'  " RuFo
   Plug 'stefanoverna/vim-i18n'    " Rails Translations
   Plug 'tomasr/molokai'           " TextMate Colorscheme
   Plug 'tomtom/tcomment_vim'      " comment vim-plugin
@@ -125,11 +125,12 @@ set pastetoggle=<F4>
 " F5: Toggle line numbering.
 nmap <silent> <F5> :set invnumber<CR>
 
-" F6: none
+" F6: Copilot
 map <F6> :Copilot enable<CR>
 map <S-F6> :Copilot disable<CR>
 
-" F7: none
+" F7: ALE
+nnoremap <F7> :ALEToggle<CR>
 
 " F8: none
 " map <F8> :set buftype=nofile<CR>
