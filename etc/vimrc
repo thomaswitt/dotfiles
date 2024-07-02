@@ -1,4 +1,4 @@
-" vimrc of Thomas Witt <http://github.com/thomaswitt>
+- " vimrc of Thomas Witt <http://github.com/thomaswitt>
 
 set shell=/usr/bin/env\ bash
 set shellcmdflag=-l\ -c
@@ -117,10 +117,22 @@ nnoremap <S-F2> ggVG"+y
 nnoremap <F3> :set wrap!<CR>
 
 " F4: Toggle paste mode.
-nnoremap \pt :set invpaste paste?<CR>
-nmap <F4> \pt
-imap <F4> <C-O>\pt
 set pastetoggle=<F4>
+
+" Define function to handle indent settings in paste mode
+function! TogglePaste()
+  if &paste
+    set nopaste
+    set expandtab shiftwidth=2 softtabstop=2
+  else
+    set paste
+    set expandtab shiftwidth=2 softtabstop=2
+  endif
+endfunction
+
+" Map <F4> to toggle paste mode and apply indent settings
+nnoremap <F4> :call TogglePaste()<CR>
+imap <F4> <C-O>:call TogglePaste()<CR>
 
 " F5: Toggle line numbering.
 nmap <silent> <F5> :set invnumber<CR>
