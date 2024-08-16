@@ -16,9 +16,10 @@ Plug 'junegunn/vim-easy-align'
   Plug 'ctrlpvim/ctrlp.vim'       " Fuzzy Search
   Plug 'dense-analysis/ale'       " Check/fix syntax asynchronously
   Plug 'github/copilot.vim'       " Github Copilot
-  Plug 'jlanzarotta/bufexplorer'
-  Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
-  "Plug 'ruby-formatter/rufo-vim'  " RuFo
+  Plug 'jlanzarotta/bufexplorer'  " BufExplorer
+  Plug 'preservim/nerdtree'       " NERDTree
+  Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
+  Plug 'ruby-formatter/rufo-vim'  " RuFo
   Plug 'stefanoverna/vim-i18n'    " Rails Translations
   Plug 'tomasr/molokai'           " TextMate Colorscheme
   Plug 'tomtom/tcomment_vim'      " comment vim-plugin
@@ -29,7 +30,8 @@ Plug 'junegunn/vim-easy-align'
   Plug 'tpope/vim-repeat'         " enable repeat supported plugin maps with .
   Plug 'tpope/vim-sensible'       " Sensible defaults
   Plug 'tpope/vim-surround'       " quoting/parenthesizing made simple
-  Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes' "Status
+  Plug 'vim-airline/vim-airline'  " Theme
+  Plug 'vim-airline/vim-airline-themes' " Status
   Plug 'vim-ruby/vim-ruby'        " Vim/Ruby Configuration Files
   Plug 'vim-scripts/BufOnly.vim'  " Delete all the buffers except the current
   Plug 'rking/ag.vim'             " Use ag, the_silver_searcher
@@ -124,11 +126,15 @@ function! TogglePaste()
   if &paste
     set nopaste
     set expandtab shiftwidth=2 softtabstop=2
+    retab
   else
     set paste
-    set expandtab shiftwidth=2 softtabstop=2
   endif
 endfunction
+
+" set pastetoggle=<F9>
+" noremap  <F9>   :set invpaste paste?<CR>
+" inoremap <F9>   <C-O>:set invpaste<CR>
 
 " Map <F4> to toggle paste mode and apply indent settings
 nnoremap <F4> :call TogglePaste()<CR>
@@ -204,6 +210,7 @@ let &t_EI .= WrapForTmux("\<Esc>[?2004l")
 
 " Enable rufo (RUby FOrmat)
 let g:rufo_auto_formatting = 1
+let g:rufo_silence_errors = 1
 
 " ALE
 let g:ale_ruby_rufo_executable = '/Users/thomas/.rbenv/shims/rufo'
@@ -258,6 +265,10 @@ autocmd BufReadPre *
 "   au FileType go nmap gd <Plug>(go-def)
 "   autocmd BufWritePost *.go GoLint
 " augroup END
+
+" VIM Airline Customization
+let g:airline_section_b = ''
+let g:airline_section_y = ''
 
 if has("gui_running")                   " GUI running?
   set guifont=Inconsolata-dz:h16        " Bigger font for MacVim
