@@ -1,27 +1,27 @@
 - " vimrc of Thomas Witt <http://github.com/thomaswitt>
 
-set shell=/usr/bin/env\ bash
+set shell=/usr/bin/env\ sh
 set shellcmdflag=-l\ -c
 
 language messages en_US.UTF-8
 
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-" ø then run :PlugInstall
+" ¬ø then run :PlugInstall
 call plug#begin()
-Plug 'junegunn/vim-easy-align'
-  "Plug 'garbas/vim-snipmate'      " TextMate-style snippets for Vim
+  " Plug 'garbas/vim-snipmate'      " TextMate-style snippets for Vim
   Plug 'AndrewRadev/switch.vim'   " Switch segments of text predefined repls
+  Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
   Plug 'artnez/vim-wipeout'       " Destroy all buffers that are not open
   Plug 'ctrlpvim/ctrlp.vim'       " Fuzzy Search
   Plug 'dense-analysis/ale'       " Check/fix syntax asynchronously
   Plug 'github/copilot.vim'       " Github Copilot
   Plug 'jlanzarotta/bufexplorer'  " BufExplorer
+  Plug 'junegunn/vim-easy-align'
+  Plug 'ku1ik/vim-monokai'        " Colorscheme
   Plug 'preservim/nerdtree'       " NERDTree
-  Plug 'Xuyuanp/nerdtree-git-plugin' " Filetree
-  Plug 'ruby-formatter/rufo-vim'  " RuFo
+  Plug 'rking/ag.vim'             " Use ag, the_silver_searcher
   Plug 'stefanoverna/vim-i18n'    " Rails Translations
-  Plug 'tomasr/molokai'           " TextMate Colorscheme
   Plug 'tomtom/tcomment_vim'      " comment vim-plugin
   Plug 'tpope/vim-endwise'        " Ruby on Rails
   Plug 'tpope/vim-fugitive'       " git
@@ -34,155 +34,117 @@ Plug 'junegunn/vim-easy-align'
   Plug 'vim-airline/vim-airline-themes' " Status
   Plug 'vim-ruby/vim-ruby'        " Vim/Ruby Configuration Files
   Plug 'vim-scripts/BufOnly.vim'  " Delete all the buffers except the current
-  Plug 'rking/ag.vim'             " Use ag, the_silver_searcher
   Plug 'vim-scripts/greplace.vim' " Global replace
 call plug#end()
 
-set autoindent          " Always set autoindenting on
-set cmdheight=2         " Height of the command line, avoid hit enter prompts
-set confirm             " Use confirmation dialogs
-set directory=~/.vimbackup,.,~/tmp,/var/tmp,/tmp
-set encoding=utf-8      " The terminal encoding
-set expandtab           " Use the appropriate number of spaces to insert a <Tab>
-set formatoptions=ctqrlj  " wrap comts/text, gq, cont. comments, keep long lines
-set hidden              " Allow several buffers to be opened (and unsaved)
-set hlsearch                          " Highlight search results
-set ignorecase          " Case-insensitive search by default
-set list                " List mode:Show tabs as CTRL-I, show end of line with $
-set modeline            " Read vim configuration from inside loaded files
-set modelines=5         " Scan up to 5 lines for a modeline
-set nostartofline       " Don't move the cursor to the first non blank char
-set report=0            " Always report number of lines changed
-set scrolloff=4         " Minimal number of lines above and below the cursor
-set shiftwidth=2        " Number of spaces to use for each step of (auto)indent
-set showcmd             " Show (partial) command in the last line of the screen
-set showmatch           " Highlight matching brackets
-set smartcase           " Respect case if the pattern contains upper case chars
-set softtabstop=2       " Number of spaces that a <Tab> counts
-set tabstop=2           " Number of spaces that a <Tab> in the file counts for
-set textwidth=72        " Textwidth 72 chars
-set title               " Set/change the window title
-set viminfo=%,'500,<500,:5000,/500,@500 " viminfo: files, reg, cmds, sea, hist
-set visualbell          " Use visual bell instead of a sound
-set whichwrap=<,>,[,]   " dont wrap at these special movements
-set wildignore+=.git    " Ignore .git repositories
-set wildmode=list:longest,list:full     " Completion mode
-set wrap                " Display long lines wrapped
+set autoindent                    " Auto-indent new lines
+set cmdheight=2                   " Command line height
+set confirm                       " Confirm on unsaved changes
+set directory=~/.vimbackup,.,~/tmp,/var/tmp,/tmp " Backup directory
+set encoding=utf-8                " File encoding
+set expandtab                     " Use spaces instead of tabs
+set formatoptions=ctqrlj          " Auto-wrap text and comments
+set hidden                        " Allow multiple buffers open without saving
+set hlsearch                      " Highlight search results
+set ignorecase                    " Case-insensitive search
+set list                          " Show tabs and end-of-line
+set modeline                      " Enable modelines
+set modelines=5                   " Scan up to 5 lines for a modeline
+set nofoldenable                  " Don't fold automatically
+set nostartofline                 " Keep cursor at the same column on new lines
+set report=0                      " Always report number of lines changed
+set scrolloff=4                   " Keep 4 lines above and below cursor
+set shiftwidth=2                  " Number of spaces per indentation level
+set showcmd                       " Show partial commands in status line
+set showmatch                     " Highlight matching brackets
+set smartcase                     " Use case-sensitive search when using uppercase
+set softtabstop=2                 " Number of spaces a <Tab> counts for
+set tabstop=2                     " Number of spaces a <Tab> counts for
+set textwidth=72                  " Max width of text before wrapping
+set title                         " Set window title
+set viminfo=%,'500,<500,:5000,/500,@500 " Save command and search history
+set visualbell                    " Use visual instead of audible bell
+set whichwrap=<,>,[,]             " Allow wrap movement with certain keys
+set wildignore+=.git              " Ignore .git files in wildmenu
+set wildmode=list:longest,list:full " Wildmenu completion
+set wrap                          " Enable line wrapping
 
-" Powerline Fonts
-" let g:airline_powerline_fonts = 1
-
+" Indentation settings
 autocmd FileType * set ts=2 sts=2 sw=2 expandtab
 
-" Search for the string marked in visual mode. E.g.: press v, go some chars to the right, press /
-vmap / y/<C-R>"<CR>
-vmap ﬂ y:Ack "<C-R>""<CR>
+" Search mappings
+vmap / y/<C-R>"<CR>               " Search for visually selected text
+vmap √ü y:Ack "<C-R>""<CR>         " Ack search for visually selected text
 
-" Don't use Ex mode, use Q for formatting
-map Q gq
+" General mappings
+map Q gq                          " Use Q for formatting
+map j gj                          " Move by visual lines
+map k gk                          " Move by visual lines
+nmap ,' cs"'                      " Swap single to double quotes
+nmap ," cs'"                      " Swap double to single quotes
 
-" Ctrl-p: previous buffer
-"map <C-p> :bp<CR>
 
-" Ctrl-n: next buffer
-"map <C-n> :bn<CR>
+" Buffer navigation
+" map <C-p> :bp<CR>               " Previous buffer
+" map <C-n> :bn<CR>               " Next buffer
 
-" Go over wrapped lines with j and k. These will jump to the next/previous
-" displayed line instead of the next/previous physical line.
-map j gj
-map k gk
+" Split window
+map ,vs :vsplit<CR>               " Vertical split
 
-" Change single- to doublequotes and vice versa (requires surround plugin)
-nmap ,' cs"'
-nmap ," cs'"
+" Text manipulations
+map ,cel :%s/^\n//<CR>            " Strip all newlines
+map ,sws :%s/\s\+$//<CR>          " Strip trailing whitespace
 
-" VSplit
-map ,vs :vsplit<CR>
+" F-key mappings
+nnoremap <F1> :Rake<CR>           " Run Rake
+map <S-F1> :!open -a Fork .<CR>   " Open Fork
+nnoremap <F2> ggVG                " Select all text
+nnoremap <S-F2> ggVG"+y           " Select all and copy to clipboard
+nnoremap <F3> :set wrap!<CR>      " Toggle line wrapping
+set pastetoggle=<F4>              " Toggle paste mode
+nnoremap <F5> :set invnumber<CR>  " Toggle line numbering
+map <F6> :Copilot enable<CR>      " Enable Copilot
+map <S-F6> :Copilot disable<CR>   " Disable Copilot
+nmap <F7> <Plug>(ale_fix)         " Fix with ALE
+nnoremap <S-F7> :ALEToggle<CR>    " Toggle ALE linting
+nnoremap <F9> :NERDTreeToggle<CR> " Toggle NERDTree
+nnoremap <F10> :BufExplorer<CR>   " Open Buffer Explorer
+nnoremap <F11> :Wipeout!<CR>      " Wipeout all buffers
+nnoremap <S-F11> :BufOnly!<CR>    " Close all except current buffer
+nnoremap <F12> :Rfind             " Rails find
 
-" Strip Returns
-map ,cel :%s/^\n//<CR>
-
-" Strip Whitespaces
-map ,sws :%s/\s\+$//<CR>
-
-" F1: Run Rake
-map <F1> :Rake<CR>
-
-" Shift-F1: GitX
-map <S-F1> :!open -a GitX .<CR>
-
-" F2: Select all.
-nnoremap <F2> ggVG
-nnoremap <S-F2> ggVG"+y
-
-" F3: Toggle line wrapping
-nnoremap <F3> :set wrap!<CR>
-
-" F4: Toggle paste mode.
-set pastetoggle=<F4>
-
-" Define function to handle indent settings in paste mode
+" Paste mode handling
 function! TogglePaste()
   if &paste
     set nopaste
     set expandtab shiftwidth=2 softtabstop=2
     retab
+    execute '%s/\s\+$//e'
   else
     set paste
   endif
 endfunction
 
-" set pastetoggle=<F9>
-" noremap  <F9>   :set invpaste paste?<CR>
-" inoremap <F9>   <C-O>:set invpaste<CR>
-
-" Map <F4> to toggle paste mode and apply indent settings
 nnoremap <F4> :call TogglePaste()<CR>
 imap <F4> <C-O>:call TogglePaste()<CR>
 
-" F5: Toggle line numbering.
-nmap <silent> <F5> :set invnumber<CR>
 
-" F6: Copilot
-map <F6> :Copilot enable<CR>
-map <S-F6> :Copilot disable<CR>
-
-" F7: ALE
-nnoremap <F7> :ALEToggle<CR>
-
-" F8: none
-" map <F8> :set buftype=nofile<CR>
-" map <S-F8> :set buftype=<CR>
-
-" F9: Current Buffer will not be written (for templfiles)
-nnoremap <silent> <F9> :NERDTreeToggle<CR>
-
-" F10: Buffer Explorer / Delete Buffers
-nnoremap <silent> <F10> :BufExplorer<CR>
-
-" F11: Wipeout/BufOnly
-nnoremap <silent> <F11> :Wipeout!<CR>
-nnoremap <silent> <S-F11> :BufOnly!<CR>
-
-" F12: Rails find
-nnoremap <silent> <F12> :Rfind
-
-" Tabs
+" Mac specific mappings
 nnoremap <D-M-Left> gT
 nnoremap <D-M-Right> gt
-
-" Remap []{}|\~ on the mac for easier typing on the Mac
-map! <D-¸> [
+map! <D-√º> [
 map! <D-+> ]
-map! <D-‹> {
+map! <D-√ú> {
 map! <D-*> }
-map! <D-∞> ~
-map! <D-ƒ> \
+map! <D-¬∞> ~
+map! <D-√Ñ> \
 map! <D-'> \|
 
-" RGrep
-:let Grep_Find_Use_Xargs = 0
 
+" Rgrep settings
+let Grep_Find_Use_Xargs = 0
+
+" Terminal and Tmux integration
 if exists('$ITERM_PROFILE')
   if exists('$TMUX')
     let &t_SI = "\<Esc>[3 q"
@@ -191,11 +153,9 @@ if exists('$ITERM_PROFILE')
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
   endif
-end
+endif
 
-" For tmux to automatically set paste and nopaste mode at the time pasting (as
-" happens in VIM UI)
-
+" Tmux paste mode integration
 function! WrapForTmux(s)
   if !exists('$TMUX')
     return a:s
@@ -208,27 +168,61 @@ endfunction
 let &t_SI .= WrapForTmux("\<Esc>[?2004h")
 let &t_EI .= WrapForTmux("\<Esc>[?2004l")
 
-" Enable rufo (RUby FOrmat)
-let g:rufo_auto_formatting = 1
-let g:rufo_silence_errors = 1
+" Set executable paths for ALE linting tools
+let g:ale_css_stylelint_executable = expand('$HOMEBREW_PREFIX/bin/stylelint')
+let g:ale_eruby_erbformatter_executable = expand('~/.rbenv/shims/erb-formatter')
+let g:ale_eruby_erblint_executable = expand('~/.rbenv/shims/erblint')
+let g:ale_eruby_htmlbeautifier_executable = expand('~/.rbenv/shims/htmlbeautifier')
+let g:ale_javascript_eslint_executable = expand('$HOMEBREW_PREFIX/bin/eslint')
+let g:ale_javascript_prettier_executable = expand('$HOMEBREW_PREFIX/bin/prettier')
+let g:ale_json_jq_executable = expand('$HOMEBREW_PREFIX/bin/jq')
+let g:ale_ruby_brakeman_executable = expand('~/.rbenv/shims/brakeman')
+let g:ale_ruby_reek_executable = expand('~/.rbenv/shims/reek')
+let g:ale_ruby_rubocop_executable = expand('~/.rbenv/shims/rubocop')
+let g:ale_ruby_ruby_executable = expand('~/.rbenv/shims/ruby')
+let g:ale_ruby_rufo_executable = expand('~/.rbenv/shims/rufo')
+let g:ale_ruby_standardrb_executable = expand('~/.rbenv/shims/standardrb')
 
-" ALE
-let g:ale_ruby_rufo_executable = '/Users/thomas/.rbenv/shims/rufo'
-let g:ale_ruby_rubocop_executable = '/Users/thomas/.rbenv/shims/rubocop'
-let g:ale_eruby_erblint_executable = '/Users/thomas/.rbenv/shims/erblint'
+let g:ale_linters_explicit = 1    " Use only the specified linters
+let g:ale_fix_on_save = 1
+let g:ale_sign_column_always = 1  " Always show the sign column
+let g:ale_sign_error = '‚ùå'
+let g:ale_sign_warning = '‚ö†Ô∏è '
+
+" Configure ALE linters explicitly for Ruby and ERuby
+" Potentially enable later reek and standardrb
 let g:ale_linters = {
-\ 'ruby': ['rubocop'],
-\ 'eruby': ['erblint'],
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'css': ['stylelint'],
+\   'eruby': ['erblint'],
+\   'json': ['jq', 'eslint'],
+\   'ruby': ['rubocop', 'brakeman'],
+\   'javascript': ['eslint'],
 \}
-let g:ale_linters_explicit = 1
-let g:ale_sign_column_always = 1
-" let g:ale_sign_error = '\u2022'
-" let g:ale_sign_warning = '\u2022'
 
-" Github Copilot
-let g:copilot_node_command = "/opt/homebrew/bin/node"
+let g:ale_fixers = {
+\   'css': ['prettier', 'stylelint'],
+\   'eruby': ['erblint', 'erb-formatter', 'htmlbeautifier', 'remove_trailing_lines', 'trim_whitespace'],
+\   'json': ['jq', 'eslint'],
+\   'ruby': ['rufo', 'rubocop', 'remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['prettier', 'eslint'],
+\}
 
-" Disable Copilot by default
+" Define a custom command :Rufo
+command! Rufo call RunRufo()
+
+" Function to execute Rufo on the entire file
+function! RunRufo()
+  " Define the path to the rufo executable, expanding the home directory
+  let l:rufo_executable = expand('~/.rbenv/shims/rufo')
+
+  " Run Rufo on the entire file silently and suppress messages
+  silent! execute "%! " . shellescape(l:rufo_executable)
+endfunction
+
+" GitHub Copilot configuration
+let g:copilot_node_command = "/opt/homebrew/bin/node"  " Specify Node.js path
+" Disable Copilot by default and enable for specific filetypes
 let g:copilot_enabled = v:false
 let g:copilot_filetypes = {
   \ '*': v:false,
@@ -238,37 +232,52 @@ let g:copilot_filetypes = {
   \ 'eruby': v:true,
   \ 'sass': v:true,
   \ 'scss': v:true,
-\ }
+\}
 
+" Disable Copilot for large files
 autocmd BufReadPre *
-   \ let f=getfsize(expand("<afile>"))
-   \ | if f > 100000 || f == -2
-   \ | let b:copilot_enabled = v:false
-   \ | endif
-
-" augroup DeleteTrailingWhitespaces
-"   autocmd!
-"   autocmd BufWritePre * :%s/\s\+$//e
-" augroup END
-
-" augroup Go
-"   autocmd! FileType go  setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab nolist
-"   let g:go_fmt_command = "goimports"
-"   " Show type info for the word under your cursor:
-"   au FileType go nmap <Leader>i <Plug>(go-info)
-"   au FileType go nmap <leader>r <Plug>(go-run)
-"   " au FileType go nmap <leader>b <Plug>(go-build)
-"   au FileType go nmap <leader>t <Plug>(go-test)
-"   au FileType go nmap <leader>c <Plug>(go-coverage)
-"   au FileType go nmap <Leader>e <Plug>(go-rename)
-"   au FileType go nmap <leader>l :GoLint<CR>
-"   au FileType go nmap gd <Plug>(go-def)
-"   autocmd BufWritePost *.go GoLint
-" augroup END
+  \ let f=getfsize(expand("<afile>"))
+  \ | if f > 100000 || f == -2
+  \ | let b:copilot_enabled = v:false
+  \ | endif
 
 " VIM Airline Customization
-let g:airline_section_b = ''
+let g:airline_section_b = ''  " Customize the Airline status line sections
 let g:airline_section_y = ''
+
+" Ruby Folding (help fold-commands)
+let ruby_fold = 1                 " Enable folding for Ruby files
+let ruby_foldable_groups = 'def'  " Fold on Ruby 'def' keywords
+set foldlevel=1                   " Highest foldlevel
+nnoremap <S-space> zA
+
+" GUI-specific settings
+if has("gui_running")
+  set guifont=Inconsolata-dz:h16  " Set font for GUI
+  set antialias                   " Enable font antialiasing
+  winsize 80 80                   " Resize window to 80x80
+  set guioptions-=m               " Remove menu bar
+  set guioptions-=T               " Remove toolbar
+endif
+
+" Colorscheme settings
+colorscheme koehler
+colorscheme wildcharm  " Set colorscheme
+
+" Private mode settings (VIM_PRIVATE=1)
+if $VIM_PRIVATE
+  set history=0               " Disable command history
+  set nobackup                " Disable backup files
+  set nomodeline              " Ignore modeline settings
+  set noshelltemp             " Do not use shell temp files
+  set noswapfile              " Disable swap files
+  set noundofile              " Disable undo files
+  set nowritebackup           " Disable write backup files
+  set secure                  " Enable secure mode
+  set viminfo=""              " Do not store viminfo
+  let g:copilot_filetypes = { '*': v:false, }  " Disable Copilot
+  let b:copilot_enabled = v:false
+endif
 
 if has("gui_running")                   " GUI running?
   set guifont=Inconsolata-dz:h16        " Bigger font for MacVim
@@ -276,21 +285,6 @@ if has("gui_running")                   " GUI running?
   winsize 80 80                         " Resize Window
   set guioptions-=m                     " Remove menu bar
   set guioptions-=T                     " Remove toolbar
-  set background=dark
-  colorscheme molokai
 endif
 
-" Call vim via VIM_PRIVATE=1 vim for privacy
-if $VIM_PRIVATE
-  set history=0
-  set nobackup
-  set nomodeline
-  set noshelltemp
-  set noswapfile
-  set noundofile
-  set nowritebackup
-  set secure
-  set viminfo=""
-  let g:copilot_filetypes = { '*': v:false, }
-  let b:copilot_enabled = { v:false }
-endif
+" vim:filetype=vim:fileencoding=utf-8:

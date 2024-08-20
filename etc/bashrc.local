@@ -1,132 +1,119 @@
-# bashrc.local of Thomas Witt <http://github.com/thomaswitt>
+# bashrc.local <http://github.com/thomaswitt/dotfiles>
+# System-wide settings for all users
 #
-# Add to /etc/bashrc:
-# test -e "/etc/bashrc.local" && . /etc/bashrc.local
-#
-# And/or:
+# Mac Install:
 # ln -s /etc/bashrc.local /etc/bashrc_
 # ln -s /etc/bashrc.local /etc/bashrc_iTerm.app
+# ln -s /etc/bashrc.local /etc//etc/bashrc_Apple_Terminal
 
-# Messages
-export LC_MESSAGES=en_US.UTF-8
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
 
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
+# LANG english
+export LANG=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8
+# export LC_MESSAGES=en_US.UTF-8
 
-# Append to the Bash history file, rather than overwriting it
-shopt -s histappend
+# General Bash options
+shopt -s nocaseglob histappend cdspell
 export HISTTIMEFORMAT='%F %T '
 export HISTCONTROL=erasedups
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000000
 
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-
-# Enable some Bash 4 features when possible:
-# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
-# * Recursive globbing, e.g. `echo **/*.txt`
+# Enable advanced Bash features when available
 for option in autocd globstar; do
-        shopt -s "$option" 2> /dev/null
+    shopt -s "$option" 2>/dev/null
 done
 
-# General
-export PATH=/usr/local/bin:/usr/local/sbin:${PATH}:/usr/X11R6/bin
-export MANPATH=${MANPATH}:/usr/man:/usr/share/man:/usr/X11R6/man:/usr/local/man:/usr/local/share/man
-export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+bind 'set expand-tilde off'
 
+# General environment variables
+export PATH=/usr/local/bin:/usr/local/sbin:${PATH}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/lib
 
-# Prompt
+# Prompt with Git branch support
 parse_git_branch() {
- git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 if [ ${UID} -eq 0 ]; then
   PS1="\[\033[1;31m\]\h:\w #\[\033[0m\] "
 else
   PS1="\[\033[1;30m\]\u@\h:\[\033[1;34m\]\w\$(parse_git_branch) \$\[\033[0m\] "
-  PROMPT_COMMAND='echo -n -e "\033k\033\\"'
 fi
-# vi
-alias vi='vim'
-alias vip='VIM_PRIVATE=1 vim'
-export EDITOR=vim
-export VISUAL=vim
 
-# Aliases that are making life easier
+# General Aliases
+alias c='clear'
+alias df='df -h'
+alias grep='grep --colour'
+alias h='history'
+alias hg='history | grep'
 alias l='ls -lahoFG'
 alias ll='ls -laOFG'
 alias lll='ls -laOFGe@'
-alias h='history'
-alias hg='history | grep'
-alias c='clear'
+alias mkdir='mkdir -p'
+alias -- -="cd -"
 alias ..='cd ..'
 alias ...='cd ../..'
-alias -- -="cd -"
 alias root='sudo -iH'
-
-function psg {
-  ps auxww | egrep -i $1 | grep -v 'egrep -i'
-}
-alias df='df -h'
-
-alias findi='find . -iname'
-alias finds="find . -not -path '*.git*' -and -not -name '*.swp'"
-
-alias ag="ag -i"
-
-alias grep='grep --colour'
-
-alias mkdir='mkdir -p'
-
-alias mdcat="mdless -P"
-
-alias randomnumber="(head /dev/random & ps axl & ps -el & netstat -na  & netstat -s & ls -lRt /dev 2>/dev/null & w) | md5sum"
-
-# npm
-alias npmls="npm -g ls --depth=0"
-alias npmi="npm install -g"
-
-# Git
-alias gst='git status'
-alias gci='git commit -a'
-alias gcip='git commit -a && git push'
-alias gco='git checkout'
-alias gbr='git branch -a'
-alias greset='git reset HEAD'
-alias gadd='git add -A'
-alias ggc='git gc'
-alias gsubinit='git submodule update --init --recursive'
-alias git-update-recursive='find . -name .git -type d -exec bash -c '"'"'echo $(dirname {}) && cd $(dirname {}); git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; if [ $? -eq 0 ]; then git pull --rebase; fi; echo'"'"' \;'
 
 # Networking
 alias sshnk="ssh -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
-
 function openssl-expiry {
   openssl s_client -servername $1 -connect $1:443 | openssl x509 -noout -dates
 }
+function checkdns {
+  dig @$(dig @8.8.8.8 $1 ns +short | head -n1) $1 ANY +noall +answer
+}
 
-checkdns () { dig @$(dig @8.8.8.8 $1 ns +short | head -n1) $1 ANY +noall +answer ; }
+# Git
+alias gadd='git add -A'
+alias gbr='git branch -a'
+alias gci='git commit -a'
+alias gcip='git commit -a && git push'
+alias gco='git checkout'
+alias ggc='git gc'
+alias git-update-recursive='find . -name .git -type d -exec bash -c '"'"'echo $(dirname {}) && cd $(dirname {}); git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; if [ $? -eq 0 ]; then git pull --rebase; fi; echo'"'"' \;'
+alias greset='git reset HEAD'
+alias gst='git status'
+alias gsubinit='git submodule update --init --recursive'
 
-# rsync
+# Rails
+alias b='bundle exec'
+alias gi='gem install --no-ri --no-rdoc'
+alias gu='gem update --no-ri --no-rdoc'
+alias rc='if [ -x bin/rails ]; then bundle exec rails console; else echo "No rails app found"; fi'
+alias rs='if [ -x bin/rails ]; then bundle exec rake tmp:clear; bundle exec rails server $*; else echo "No bin/rails script found"; fi'
+alias tl='tail -f log/*'
+alias tld='tail -f log/development.log'
+
+# npm
+alias npmi="npm install -g"
+alias npmls="npm -g ls --depth=0"
+alias npms='npm --no-progress --no-fund --loglevel=error'
+#export PATH=${PATH}:~/.npm-global/bin
+
+# admin/development
+function psg {
+  ps auxww | egrep -i $1 | grep -v 'egrep -i'
+}
+alias ag="ag -i"
+alias findi='find . -iname'
+alias finds="find . -not -path '*.git*' -and -not -name '*.swp'"
+alias randomnumber="(head /dev/random & ps axl & ps -el & netstat -na  & netstat -s & ls -lRt /dev 2>/dev/null & w) | md5sum"
+
+# Rsync
 export RSYNC_RSH='ssh'
 export RSYNC_OPTS='-CPavz'
 
-
-# Rails
-alias tl='tail -f log/*'
-alias tld='tail -f log/development.log'
-alias ss='if [ -x bin/rails -o -x script/rails ]; then rm log/development.log; bundle exec rake tmp:clear; bundle exec rails server $*; else echo "No rails app found"; fi'
-alias sc='if [ -x bin/rails -o -x script/rails ]; then bundle exec rails console; else echo "No rails app found"; fi'
-alias gi='gem install --no-ri --no-rdoc'
-alias b='bundle exec'
-alias gu='gem update --no-ri --no-rdoc'
+# vim
+alias vi='vim'
+alias vip='VIM_PRIVATE=1 vim'
 
 # dc
 DC_ENV_ARGS="-e 2k"
 
-# Any additional aliases?
-test -e "${HOME}/.alias" && . ${HOME}/.alias
-
+# Load Mac-specific settings
 if [[ $(uname) = "Darwin" ]]; then
   test -e "/etc/bashrc.local.mac" && . /etc/bashrc.local.mac
 fi
