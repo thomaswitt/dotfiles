@@ -67,16 +67,10 @@ function checkdns {
 }
 
 # Git
-alias gadd='git add -A'
-alias gbr='git branch -a'
-alias gci='git commit -a'
-alias gcip='git commit -a && git push'
-alias gco='git checkout'
-alias ggc='git gc'
+g() {
+  git "$@"
+}
 alias git-update-recursive='find . -name .git -type d -exec bash -c '"'"'echo $(dirname {}) && cd $(dirname {}); git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; if [ $? -eq 0 ]; then git pull --rebase; fi; echo'"'"' \;'
-alias greset='git reset HEAD'
-alias gst='git status'
-alias gsubinit='git submodule update --init --recursive'
 
 # Rails
 alias b='bundle exec'
