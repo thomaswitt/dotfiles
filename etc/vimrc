@@ -105,7 +105,7 @@ set pastetoggle=<F4>              " Toggle paste mode
 nnoremap <F5> :set invnumber<CR>  " Toggle line numbering
 map <F6> :Copilot enable<CR>      " Enable Copilot
 map <S-F6> :Copilot disable<CR>   " Disable Copilot
-nmap <F7> <Plug>(ale_fix)         " Fix with ALE
+nnoremap <F7> <Plug>(ale_fix)
 nnoremap <S-F7> :ALEToggle<CR>    " Toggle ALE linting
 nnoremap <F9> :NERDTreeToggle<CR> " Toggle NERDTree
 nnoremap <F10> :BufExplorer<CR>   " Open Buffer Explorer
@@ -223,7 +223,7 @@ endfunction
 " GitHub Copilot configuration
 let g:copilot_node_command = "/opt/homebrew/bin/node"  " Specify Node.js path
 " Disable Copilot by default and enable for specific filetypes
-let g:copilot_enabled = v:false
+let g:copilot_enabled = v:true
 let g:copilot_filetypes = {
   \ '*': v:false,
   \ 'css': v:true,
