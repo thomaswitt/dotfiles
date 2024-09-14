@@ -17,7 +17,10 @@ call plug#begin()
   Plug 'dense-analysis/ale'       " Check/fix syntax asynchronously
   Plug 'github/copilot.vim'       " Github Copilot
   Plug 'jlanzarotta/bufexplorer'  " BufExplorer
-  Plug 'junegunn/vim-easy-align'
+  Plug 'junegunn/vim-easy-align'  " Easy alignment of text
+  Plug 'junegunn/fzf'             " Fuzzy Search
+  Plug 'junegunn/fzf.vim'         " Fuzzy Search
+  Plug '/opt/homebrew/opt/fzf'    " Fuzzy Search
   Plug 'ku1ik/vim-monokai'        " Colorscheme
   Plug 'preservim/nerdtree'       " NERDTree
   Plug 'rking/ag.vim'             " Use ag, the_silver_searcher
