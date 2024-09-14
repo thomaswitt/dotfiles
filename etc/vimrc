@@ -78,8 +78,6 @@ vmap ß y:Ack "<C-R>""<CR>         " Ack search for visually selected text
 
 " General mappings
 map Q gq                          " Use Q for formatting
-map j gj                          " Move by visual lines
-map k gk                          " Move by visual lines
 nmap ,' cs"'                      " Swap single to double quotes
 nmap ," cs'"                      " Swap double to single quotes
 
