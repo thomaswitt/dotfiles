@@ -225,11 +225,16 @@ let g:copilot_enabled = v:true
 let g:copilot_filetypes = {
   \ '*': v:false,
   \ 'css': v:true,
-  \ 'html': v:true,
-  \ 'ruby': v:true,
   \ 'eruby': v:true,
+  \ 'gitcommit': v:true,
+  \ 'html': v:true,
+  \ 'js': v:true,
+  \ 'json': v:true,
+  \ 'ruby': v:true,
   \ 'sass': v:true,
   \ 'scss': v:true,
+  \ 'vim': v:true,
+  \ 'yaml': v:true,
 \}
 
 " Disable Copilot for large files
